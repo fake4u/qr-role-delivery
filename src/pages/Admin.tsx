@@ -6,10 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { withRoleProtection, useAuth } from "@/contexts/AuthContext";
 import QRGenerator from "@/components/QRGenerator";
 import { 
-  PackageSearch, 
   QrCode, 
   LogOut, 
-  PackagePlus, 
   UserCog, 
   User, 
   UserCheck, 
@@ -49,12 +47,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
-interface PackageStats {
-  total: number;
-  delivered: number;
-  inTransit: number;
-}
-
 interface UserData {
   id: string;
   name: string;
@@ -64,11 +56,6 @@ interface UserData {
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
-  const [stats, setStats] = useState<PackageStats>({
-    total: 43,
-    delivered: 31,
-    inTransit: 12,
-  });
   const [users, setUsers] = useState<UserData[]>([
     { id: "1", name: "Admin User", email: "admin@example.com", role: "admin" },
     { id: "2", name: "Delivery Agent", email: "delivery@example.com", role: "delivery" },
@@ -189,38 +176,6 @@ const AdminDashboard = () => {
               </SheetFooter>
             </SheetContent>
           </Sheet>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <PackageSearch className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Total Packages</p>
-              <p className="text-2xl font-bold">{stats.total}</p>
-            </div>
-          </Card>
-          
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-green-100 p-3 rounded-full">
-              <PackageSearch className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Delivered</p>
-              <p className="text-2xl font-bold">{stats.delivered}</p>
-            </div>
-          </Card>
-          
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-amber-100 p-3 rounded-full">
-              <PackageSearch className="h-6 w-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">In Transit</p>
-              <p className="text-2xl font-bold">{stats.inTransit}</p>
-            </div>
-          </Card>
         </div>
 
         <Tabs defaultValue="generate" className="animate-fade-in">

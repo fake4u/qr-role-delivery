@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { QRCode } from "react-qrcode";
 import { Button } from "@/components/ui/button";
@@ -29,13 +28,6 @@ const QRGenerator: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPackageData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const generateRandomId = () => {
-    setPackageData((prev) => ({
-      ...prev,
-      id: `PKG-${Math.floor(1000 + Math.random() * 9000)}`,
-    }));
   };
 
   const handleGenerateQR = (e: React.FormEvent) => {
@@ -97,24 +89,14 @@ const QRGenerator: React.FC = () => {
             <form onSubmit={handleGenerateQR} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="id">Package ID</Label>
-                <div className="flex space-x-2">
-                  <Input
-                    id="id"
-                    name="id"
-                    value={packageData.id}
-                    onChange={handleInputChange}
-                    className="input-field flex-1"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={generateRandomId}
-                    className="whitespace-nowrap"
-                  >
-                    Generate Random
-                  </Button>
-                </div>
+                <Input
+                  id="id"
+                  name="id"
+                  value={packageData.id}
+                  onChange={handleInputChange}
+                  className="input-field"
+                  required
+                />
               </div>
               
               <div className="space-y-2">
