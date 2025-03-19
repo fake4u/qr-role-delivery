@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { withRoleProtection, useAuth } from "@/contexts/AuthContext";
 import QRGenerator from "@/components/QRGenerator";
-import { PackageSearch, QrCode, UserCircle, LogOut, PackagePlus } from "lucide-react";
+import { PackageSearch, QrCode, LogOut, PackagePlus } from "lucide-react";
 
 interface PackageStats {
   total: number;
@@ -23,7 +22,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-secondary/50">
-      {/* Header */}
       <header className="border-b bg-background">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -46,7 +44,6 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
@@ -63,7 +60,6 @@ const AdminDashboard = () => {
           </Button>
         </div>
 
-        {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="p-6 neo flex items-center space-x-4">
             <div className="bg-blue-100 p-3 rounded-full">
@@ -96,7 +92,6 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        {/* Main content tabs */}
         <Tabs defaultValue="generate" className="animate-fade-in">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="generate">Generate QR</TabsTrigger>

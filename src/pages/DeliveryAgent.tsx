@@ -1,14 +1,39 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { withRoleProtection, useAuth } from "@/contexts/AuthContext";
 import QRScanner from "@/components/QRScanner";
-import { QrCode, UserCircle, PackageSearch, LogOut, CheckCheck, Truck } from "lucide-react";
+import { QrCode, LogOut, Upload, Camera } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
 
 const DeliveryAgentDashboard = () => {
   const { user, logout } = useAuth();
+  const [fileUploadMode, setFileUploadMode] = React.useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // In a real app, we would process the QR code image here
+      // For now, we'll just show a success toast
+      console.log("File uploaded:", file.name);
+      toast({
+        title: "QR Code Image Uploaded",
+        description: "Processing QR code from image...",
+      });
+      
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -40,110 +65,64 @@ const DeliveryAgentDashboard = () => {
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-1">Delivery Dashboard</h1>
           <p className="text-muted-foreground">
-            Scan and verify package QR codes
+            Scan or upload package QR codes
           </p>
         </div>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <Truck className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Today's Deliveries</p>
-              <p className="text-2xl font-bold">8</p>
-            </div>
-          </Card>
-          
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-green-100 p-3 rounded-full">
-              <CheckCheck className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Completed</p>
-              <p className="text-2xl font-bold">5</p>
-            </div>
-          </Card>
-          
-          <Card className="p-6 neo flex items-center space-x-4">
-            <div className="bg-amber-100 p-3 rounded-full">
-              <PackageSearch className="h-6 w-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm">Pending</p>
-              <p className="text-2xl font-bold">3</p>
-            </div>
+        <div className="max-w-md mx-auto">
+          <Card className="neo p-6">
+            <Tabs defaultValue="scan" className="w-full">
+              <TabsList className="grid grid-cols-2 w-full">
+                <TabsTrigger value="scan">
+                  <div className="flex items-center gap-2">
+                    <Camera className="h-4 w-4" />
+                    <span>Scan QR</span>
+                  </div>
+                </TabsTrigger>
+                <TabsTrigger value="upload">
+                  <div className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    <span>Upload Image</span>
+                  </div>
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="scan" className="mt-6">
+                <QRScanner />
+              </TabsContent>
+              
+              <TabsContent value="upload" className="mt-6">
+                <div className="text-center space-y-6">
+                  <div className="py-8">
+                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <h2 className="text-xl font-medium">Upload QR Code Image</h2>
+                    <p className="text-muted-foreground mt-2">
+                      Select a PNG image containing a QR code
+                    </p>
+                  </div>
+                  
+                  <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    accept="image/png,image/jpeg"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  
+                  <Button 
+                    onClick={triggerFileUpload} 
+                    className="btn-primary w-full flex items-center justify-center gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    <span>Choose Image</span>
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
           </Card>
         </div>
-
-        {/* Main content tabs */}
-        <Tabs defaultValue="scan" className="animate-fade-in">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="scan">Scan QR</TabsTrigger>
-            <TabsTrigger value="deliveries">My Deliveries</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="scan" className="mt-0">
-            <div className="max-w-md mx-auto">
-              <QRScanner />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="deliveries" className="mt-0">
-            <Card className="neo p-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Today's Deliveries</h3>
-                
-                <div className="space-y-3">
-                  {[1, 2, 3].map((item) => (
-                    <div 
-                      key={item} 
-                      className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-amber-100 p-2 rounded">
-                          <Truck className="h-5 w-5 text-amber-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">PKG-{1000 + item}</p>
-                          <p className="text-sm text-muted-foreground">
-                            123 Main St • New York
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-sm px-2 py-1 bg-amber-100 text-amber-800 rounded-full">
-                        Pending
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {[4, 5, 6, 7, 8].map((item) => (
-                    <div 
-                      key={item} 
-                      className="flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-green-100 p-2 rounded">
-                          <CheckCheck className="h-5 w-5 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="font-medium">PKG-{1000 + item}</p>
-                          <p className="text-sm text-muted-foreground">
-                            456 Oak Ave • Brooklyn
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-sm px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                        Delivered
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </TabsContent>
-        </Tabs>
       </main>
     </div>
   );
